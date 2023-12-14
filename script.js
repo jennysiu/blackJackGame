@@ -1,93 +1,135 @@
 console.log("Ding");
 
 
-
-
-// 2. Deals a random number between 2 and 11 inclusive to the dealer.
-
-// 3. If the player hits, add a number between 2 and 11.
-
-  // ask user hit or stay
-    
-
-  // If the player goes over 21 --> they lose.
-    // if hit = check if new sum is > 21 
-    
-
-  // If the player has 21, stay for them.
-    // if = equal -> blackjack
-
-  // Repeat until they choose to stay or they bust
-    // if sum < 21 ask user hit or stay
-
-// 4. Once player stays add a number between 2 and 11 to the dealer's hand.
-  // - If dealer number is less than 17 add another number
-    
-  // - Repeat until the number is over over 17 but less 
-    // if dealer sum < 17 then repeat until sum > 17
-
-  //   than 21, or if the dealer goes over 21
-    // if > 21 - dealer lose
-
-  // - If dealer goes over 21 they lose.
-
-// 5. Once dealer stops, and neither player bust, 
-// compare each number to 21. Whoever is closer wins!
-
 // *** Create functions if you begin to repeat yourself.
-
-// function to generate random number 
 
 let playerHand = 0;
 let dealerHand = 0;
 
 let hit = true;
-
+let play;
 // ASK USER TO START GAME
 function askUserToStartGame() {
-  let play = confirm(`Start a game of Blackjack? OK to start game.`);
+  do {
+    play = prompt(`Start a game of Blackjack? Type "play" start game.`).toLowerCase();
 
-  if (play) {
-    startGame();
-    } else {
-    alert(`Maybe next time!`)
-    }
+    if (play == "play") {
+      startGame();
+      } else if (play === null) {
+        alert(`Maybe next time!`)
+      } else {
+        alert(`Please choose type play or click cancel.`);
+      } 
+
+  } while(play !== "play" && play !== null);
 }
 
-// START GAME
+askUserToStartGame();
+
+// if ok START GAME
 function startGame() {
 
   playerHand = Math.floor(Math.random() *17) + 4;
   alert(`You have: ${playerHand}`)
   if (playerHand ==21) {
-    alert("Blackjack!! You Won!!")
+    blackJack();
   } else {
     dealerHand = Math.floor(Math.random() * 11) + 2;
     alert(`Dealer has: ${dealerHand}`)
     }
-
-  confirm(`You have: ${playerHand} \nDealer has: ${dealerHand} \nHit or stay? (OK to hit)`)
   }
 
+  // start for loop to ask player if he wants to hit or stay until game ends
+  for (var i = 0; playerHand <= 21; i++) {
+    promptHitOrStay() 
 
+    if (hit) {
+      dealPlayer();
+    } else {
+      dealBot();
+    }
+    compareHands();
+
+  // prompt to play again or not
+  promptPlayAgain();
+}
+
+// prompt hit or stay
+function promptHitOrStay() {
+  hit = confirm(`You have: ${playerHand} \nDealer has: ${dealerHand} \nHit or stay? (OK to hit)`)
+  return hit;
+}
+
+// generates new card
 function generateCard() {
-  var newCard = Math.floor(Math.random()) +2;
-  return(newCard)
+  var randomCard = Math.floor(Math.random() *11) +2;
+  return randomCard;
+}
+
+// deal player new card
+function dealPlayer() {
+  newCard = generateCard();
+  alert(`New card: ${newCard}`)
+  playerHand = playerHand + newCard;
+  alert(`You have: ${playerHand}`)
+    if (playerHand === 21) {
+    blackJack();
+    } else if (playerHand > 21) {
+    gameOver();
+    } 
+  return playerHand;
+}
+
+// deal bot new card 
+function dealBot() {
+  
+  // for loop to keep going if dealer is less than 17
+  for (var i = 0; dealerHand < 17; i++) {
+    newCard = generateCard();
+    alert(`Deraler's hits: ${newCard}`);
+    dealerHand = dealerHand + newCard;
+    alert(`Dealer has: ${dealerHand}`)
+
+    if (dealerHand === 21) {
+      gameOver();
+    } else if (dealerHand > 21) {
+      alert(`You have: ${playerHand} \nDealer has: ${dealerHand} \nDealer busted. Well done, you WIN!!`)
+    }
+  }
+  return dealerHand;
+}
+
+// compare hands 
+function compareHands() {
+  if (playerHand > dealerHand) {
+    alert(`You have: ${playerHand} \nDealer has: ${dealerHand} \nWell done, you WIN!!`)
+  } else if (playerHand > dealerHand) {
+    alert(`You have: ${playerHand} \nDealer has: ${dealerHand} \nSorry, you lose. Better luck next time.`)
+  } else {
+    alert(`You have: ${playerHand} \nDealer has: ${dealerHand} \nIt's a tie!`)
+  } 
+}
+
+// prompt to play again
+function promptPlayAgain() {
+  play = prompt(`Do you want to play again? Type yes to play again.`).toLowerCase();
+  if (play == "yes") {
+    startGame()
+  } else {
+    (`Thanks for playing. See you next time!`)
+  }
+}
+
+// Blackjack message
+function blackJack () {
+  alert(`You have: ${playerHand}. Blackjack!! you WIN!!`);
+}
+
+// game over message
+function gameOver() {
+  alert(`You have: ${playerHand} \nDealer has: ${dealerHand} \nSorry, you lose. Better luck next time.`)
+  promptPlayAgain();
 }
 
 
-// function hitOrStay() {
-//   confirm("Hit or stay? OK to hit, cancel to Stay.")
-//   if (true) {
-//     generateCard();
-//   } 
-// }
-
-
-// if (randomNumber == 21) {
-//   return("Blackjack!!")
-// }
-
-
-askUserToStartGame();
-// startGame()
+// askUserToStartGame();
